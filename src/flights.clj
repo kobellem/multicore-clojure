@@ -42,6 +42,18 @@
 		(first)
 		(first)))
 
+(defn update-flight [flight price seats]
+	(ref-set flight
+		{:id (flight :id)
+		:from (flight :from) :to (flight :to)
+		:carrier (flight :carrier)
+		:pricing ((fn [pricing]
+			(for [[p a t] pricing]
+				(if (= p price)
+					[p (- a seats) (+ t seats)]
+					[p a t])))
+			(flight :pricing))}))
+
 (defn find-flight [customer]
 	(let [{:keys [_id from to seats budget]} customer
 	     flights-on-route (filter-flights-by-route from to)]
@@ -53,4 +65,6 @@
 							:when (and (some? lowest-price) (<= lowest-price budget))]
 						{:flight flight :price lowest-price})
 				cheapest-flight-and-price	(first (sort-by :price flights-and-prices))]
+			(if (some? cheapest-flight-and-price)
+				(update-flight (cheapest-flight-and-price :flight) (cheapest-flight-and-price :price) seats))
 			cheapest-flight-and-price))))
