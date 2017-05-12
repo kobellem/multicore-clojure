@@ -1,36 +1,42 @@
 (ns input-simple)
 
 (def flights
-  [{:id 0
-    :from "BRU" :to "ATL"
-    :carrier "Delta"
-    :pricing [[600 150 0] ; price; # seats available at that price; # seats taken at that price
-              [650  50 0]
-              [700  50 0]
-              [800  50 0]]}
-   {:id 1
-    :from "BRU" :to "LON"
-    :carrier "Brussels Airlines"
-    :pricing [[300 150 0]
-              [350  50 0]
-              [370  20 0]
-              [380  30 0]]}
-   {:id 2
-    :from "BRU" :to "LON"
-    :carrier "Brussels Airlines"
-    :pricing [[250 100 0]
-              [300  50 0]]}
-   {:id 3
-    :from "BRU" :to "MAD"
-    :carrier "Brussels Airlines"
-    :pricing [[200 150 0]
-              [250  50 0]
-              [300 100 0]]}
-   {:id 4
-    :from "BRU" :to "MAD"
-    :carrier "Iberia"
-    :pricing [[250 150 0]
-              [300  50 0]]}])
+  (list
+		(ref
+			{:id 0
+			:from "BRU" :to "ATL"
+			:carrier "Delta"
+			:pricing [[600 150 0] ; price; # seats available at that price; # seats taken at that price
+								[650  50 0]
+								[700  50 0]
+								[800  50 0]]})
+   	(ref
+			{:id 1
+			:from "BRU" :to "LON"
+			:carrier "Brussels Airlines"
+			:pricing [[300 150 0]
+								[350  50 0]
+								[370  20 0]
+								[380  30 0]]})
+   (ref
+		 {:id 2
+			:from "BRU" :to "LON"
+			:carrier "Brussels Airlines"
+			:pricing [[250 100 0]
+								[300  50 0]]})
+   (ref
+		 {:id 3
+			:from "BRU" :to "MAD"
+			:carrier "Brussels Airlines"
+			:pricing [[200 150 0]
+								[250  50 0]
+								[300 100 0]]})
+   (ref
+		 {:id 4
+			:from "BRU" :to "MAD"
+			:carrier "Iberia"
+			:pricing [[250 150 0]
+								[300  50 0]]})))
 
 (def customers
   [{:id  0 :from "BRU" :to "ATL" :seats 5 :budget 700}

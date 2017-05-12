@@ -1,12 +1,13 @@
-(ns flights)
+(ns flights
+	(:require
+		[clojure.string]
+		[input-simple :as input]))
 
-(def flights (list))
-
-(defn initialize-flights [initial-flights]
-	(reset! flights (list initial-flights)))
+(def flights input/flights)
 
 (defn print-flights []
-	(for [flight flights] (print flight)))
+	(print flights)
+	(for [flight flights] (print (deref flight))))
 	
 (defn filter-flights-by-carrier [carrier]
 	(filter (fn [flight]
@@ -15,16 +16,16 @@
 
 (defn filter-flights-by-route [from to]
 	(filter (fn [flight]
-		(and ((flight :from) == from) ((flight :to) == to)))
+		(and (= (flight :from) from) (= (flight :to)  to)))
 		flights))
 
 (defn start-sale [carrier]
-	(let [affected-flights (filter-flights-by-carrier)]
+	(let [affected-flights (filter-flights-by-carrier carrier)]
 		(dosync (for [flight affected-flights]
 			(ref-set flight :pricing (* 0.8))))))
 
 (defn end-sale [carrier]
-	(let [affected-flights (filter-flights-by-carrier)]
+	(let [affected-flights (filter-flights-by-carrier carrier)]
 		(dosync (for [flight affected-flights]
 			(ref-set flight :pricing (* 1.25))))))
 
@@ -35,7 +36,7 @@
   (filter #(>= (second %) seats) pricing))
 
 (defn lowest-available-price [flight seats]
-	(-> (:pricing flight)
+	(-> (flight :pricing)
 		(filter-pricing-with-n-seats seats)
 		(sort-pricing)
 		(first)
