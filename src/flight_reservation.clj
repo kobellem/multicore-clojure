@@ -1,8 +1,8 @@
 (ns flight-reservation
   (:require [clojure.string]
             [clojure.pprint]
-            [input-simple :as input]
-            #_[input-random :as input]
+            ;[input-simple :as input]
+            [input-random :as input]
 						[flights :as flights]))
 
 (def logger (agent nil))
@@ -37,9 +37,7 @@
   (atom false))
 
 (defn process-customers [customers]
-  "Process `customers` one by one."
-  (doseq [customer customers]
-		(process-customer customer))
+  (doall (pmap process-customer customers))
   (reset! finished-processing? true))
 
 (defn sales-process []
@@ -48,9 +46,9 @@
   (loop []
     (let [discounted-carrier (rand-nth input/carriers)]
       (Thread/sleep input/TIME_BETWEEN_SALES)
-      (flights/start-sale discounted-carrier)
+      (flights/start-sale discounted-carrier log)
       (Thread/sleep input/TIME_OF_SALES)
-      (flights/end-sale discounted-carrier))
+      (flights/end-sale discounted-carrier log))
     (if (not @finished-processing?)
       (recur))))
 
@@ -60,8 +58,8 @@
         f2 (future (sales-process))]
     @f1
     @f2)
-  (println "Flights:")
-  (flights/print-flights))
+  (log "Flights:")
+  (flights/print-flights log))
 
 (main)
 (shutdown-agents)

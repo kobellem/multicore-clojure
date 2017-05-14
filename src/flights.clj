@@ -1,13 +1,12 @@
 (ns flights
 	(:require
 		[clojure.string]
-		[input-simple :as input]))
+		[input-random :as input]))
 
 (def flights input/flights)
 
-(defn print-flights []
-	(print flights)
-	(for [flight flights] (print (deref flight))))
+(defn print-flights [log]
+	(log flights))
 	
 (defn filter-flights-by-carrier [carrier]
 	(filter (fn [flight]
@@ -19,15 +18,17 @@
 		(and (= (flight :from) from) (= (flight :to)  to)))
 		flights))
 
-(defn start-sale [carrier]
+(defn start-sale [carrier log]
 	(let [affected-flights (filter-flights-by-carrier carrier)]
 		(dosync (for [flight affected-flights]
-			(ref-set flight :pricing (* 0.8))))))
+			(ref-set flight :pricing (* 0.8)))))
+	(log "Sale started for " carrier))
 
-(defn end-sale [carrier]
+(defn end-sale [carrier log]
 	(let [affected-flights (filter-flights-by-carrier carrier)]
 		(dosync (for [flight affected-flights]
-			(ref-set flight :pricing (* 1.25))))))
+			(ref-set flight :pricing (* 1.25)))))
+	(log "Sale ended for " carrier))
 
 (defn sort-pricing [pricing]
   (sort-by first pricing))
